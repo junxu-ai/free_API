@@ -1,0 +1,53 @@
+app:
+  host: "0.0.0.0"
+  port: 8000
+  request_timeout_seconds: 60
+  health_check_interval_seconds: 300
+  sqlite_path: "data/router.db"
+
+router:
+  default_model: "auto"
+  default_scenario: "generation"
+  default_performance: "high"
+  fallback_order:
+    - "high"
+    - "medium"
+    - "low"
+
+providers:
+  - id: "groq"
+    enabled: true
+    api_key_env: "GROQ_API_KEY"
+    model_allowlist:
+      - "llama-3.3-70b-versatile"
+      - "qwen3-32b"
+      - "deepseek-r1-distill-70b"
+
+  - id: "github_models"
+    enabled: true
+    api_key_env: "GITHUB_TOKEN"
+    model_allowlist:
+      - "gpt-4.1-mini"
+      - "o4-mini"
+      - "DeepSeek-R1"
+
+  - id: "openrouter"
+    enabled: true
+    api_key_env: "OPENROUTER_API_KEY"
+    model_allowlist:
+      - "qwen/qwen3.6-plus:free"
+      - "deepseek/deepseek-r1-0528:free"
+      - "qwen/qwen3-coder-480b-a35b:free"
+
+  - id: "cloudflare"
+    enabled: false
+    api_key_env: "CLOUDFLARE_API_TOKEN"
+    account_id_env: "CLOUDFLARE_ACCOUNT_ID"
+    model_allowlist:
+      - "@cf/meta/llama-3.3-70b-instruct-fp8-fast"
+
+  - id: "huggingface"
+    enabled: false
+    api_key_env: "HUGGINGFACE_API_KEY"
+    model_allowlist:
+      - "meta-llama/Meta-Llama-3.1-8B-Instruct"
