@@ -48,6 +48,12 @@ providers:
 
   - id: "huggingface"
     enabled: false
-    api_key_env: "HUGGINGFACE_API_KEY"
+    api_key_env: "HF_TOKEN"
     model_allowlist:
-      - "meta-llama/Meta-Llama-3.1-8B-Instruct"
+      - "meta-llama/Llama-3.3-70B-Instruct"
+
+  - id: "kluster"
+    enabled: false
+    api_key_env: "KLUSTER_API_KEY"
+    model_allowlist:
+      - "deepseek-ai/DeepSeek-R1"

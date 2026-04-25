@@ -16,6 +16,12 @@ class ProviderSpec:
     api_key_env: Optional[str]
     account_id_env: Optional[str]
     docs_url: Optional[str]
+    setup_reference: Optional[str]
+    auth_hint: Optional[str]
+    example_model: Optional[str]
+    environment_variables: List[str]
+    key_steps: List[str]
+    notes: List[str]
     enabled: bool = False
     default_model: Optional[str] = None
     extra_headers: Dict[str, str] = field(default_factory=dict)
@@ -29,6 +35,20 @@ class ProviderSpec:
         if not self.account_id_env:
             return None
         return os.getenv(self.account_id_env)
+
+    def resolved_base_url(self) -> str:
+        base_url = self.base_url
+        if "{account_id}" in base_url:
+            account_id = self.account_id()
+            if not account_id:
+                raise RuntimeError(
+                    "Provider {0} requires {1} to resolve the base URL.".format(
+                        self.id,
+                        self.account_id_env,
+                    )
+                )
+            base_url = base_url.replace("{account_id}", account_id)
+        return base_url
 
 
 @dataclass
@@ -66,6 +86,12 @@ class Catalog:
                 api_key_env=(override.api_key_env if override and override.api_key_env else item.get("api_key_env")),
                 account_id_env=(override.account_id_env if override and override.account_id_env else item.get("account_id_env")),
                 docs_url=item.get("docs_url"),
+                setup_reference=item.get("setup_reference"),
+                auth_hint=item.get("auth_hint"),
+                example_model=item.get("example_model"),
+                environment_variables=list(item.get("environment_variables", [])),
+                key_steps=list(item.get("key_steps", [])),
+                notes=list(item.get("notes", [])),
                 enabled=bool(override and override.enabled),
                 default_model=(override.default_model if override else None),
                 extra_headers=(override.extra_headers if override else {}),

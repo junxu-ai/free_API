@@ -81,3 +81,24 @@ class ModelCard(BaseModel):
 class ModelListResponse(BaseModel):
     object: str = "list"
     data: List[ModelCard]
+
+
+class ProviderCard(BaseModel):
+    id: str
+    name: str
+    category: str
+    adapter: str
+    base_url: str
+    enabled: bool
+    auth_hint: Optional[str] = None
+    example_model: Optional[str] = None
+    environment_variables: List[str] = Field(default_factory=list)
+    key_steps: List[str] = Field(default_factory=list)
+    notes: List[str] = Field(default_factory=list)
+    docs_url: Optional[str] = None
+    setup_reference: Optional[str] = None
+
+
+class ProviderListResponse(BaseModel):
+    object: str = "list"
+    data: List[ProviderCard]

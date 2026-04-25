@@ -1,4 +1,5 @@
 import unittest
+import os
 
 from free_llm_router.catalog import Catalog
 from free_llm_router.config import ProviderConfig, Settings
@@ -51,6 +52,24 @@ class RouterTests(unittest.TestCase):
         )
         plan = router.build_plan(request)
         self.assertEqual(plan.candidates[0].id, "qwen/qwen3-coder-480b-a35b:free")
+
+    def test_provider_base_url_template_resolves_account_id(self) -> None:
+        os.environ["CLOUDFLARE_ACCOUNT_ID"] = "acct-123"
+        settings = Settings(
+            providers=[
+                ProviderConfig(
+                    id="cloudflare",
+                    enabled=True,
+                    account_id_env="CLOUDFLARE_ACCOUNT_ID",
+                )
+            ]
+        )
+        catalog = Catalog(settings)
+        provider = catalog.providers["cloudflare"]
+        self.assertEqual(
+            provider.resolved_base_url(),
+            "https://api.cloudflare.com/client/v4/accounts/acct-123/ai/v1",
+        )
 
 
 if __name__ == "__main__":

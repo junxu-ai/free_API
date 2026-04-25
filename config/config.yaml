@@ -38,3 +38,10 @@ providers:
       - "qwen/qwen3.6-plus:free"
       - "deepseek/deepseek-r1-0528:free"
       - "qwen/qwen3-coder-480b-a35b:free"
+
+  - id: "cloudflare"
+    enabled: false
+    api_key_env: "CLOUDFLARE_API_TOKEN"
+    account_id_env: "CLOUDFLARE_ACCOUNT_ID"
+    model_allowlist:
+      - "@cf/meta/llama-3.3-70b-instruct-fp8-fast"

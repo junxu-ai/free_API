@@ -11,7 +11,7 @@ from free_llm_router.clients import ProviderClient
 from free_llm_router.config import Settings, load_settings
 from free_llm_router.health import HealthMonitor
 from free_llm_router.router import ModelRouter
-from free_llm_router.schemas import ChatCompletionRequest, ChatCompletionResponse, ModelCard, ModelListResponse
+from free_llm_router.schemas import ChatCompletionRequest, ModelCard, ModelListResponse, ProviderCard, ProviderListResponse
 from free_llm_router.store import RouterStore
 
 
@@ -68,6 +68,33 @@ def create_app(config_path: str) -> FastAPI:
                 )
             )
         return ModelListResponse(data=cards)
+
+    @app.get("/v1/providers", response_model=ProviderListResponse)
+    async def list_providers() -> ProviderListResponse:
+        cards = []
+        for provider in catalog.providers.values():
+            try:
+                base_url = provider.resolved_base_url()
+            except RuntimeError:
+                base_url = provider.base_url
+            cards.append(
+                ProviderCard(
+                    id=provider.id,
+                    name=provider.name,
+                    category=provider.category,
+                    adapter=provider.adapter,
+                    base_url=base_url,
+                    enabled=provider.enabled,
+                    auth_hint=provider.auth_hint,
+                    example_model=provider.example_model,
+                    environment_variables=provider.environment_variables,
+                    key_steps=provider.key_steps,
+                    notes=provider.notes,
+                    docs_url=provider.docs_url,
+                    setup_reference=provider.setup_reference,
+                )
+            )
+        return ProviderListResponse(data=cards)
 
     @app.get("/v1/router/summary")
     async def router_summary() -> Dict[str, object]:
