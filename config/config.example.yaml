@@ -27,9 +27,9 @@ providers:
     enabled: true
     api_key_env: "GITHUB_TOKEN"
     model_allowlist:
-      - "gpt-4.1-mini"
-      - "o4-mini"
-      - "DeepSeek-R1"
+      - "openai/gpt-4.1-mini"
+      - "openai/o4-mini"
+      - "deepseek/DeepSeek-R1"
 
   - id: "openrouter"
     enabled: true
@@ -37,7 +37,7 @@ providers:
     model_allowlist:
       - "qwen/qwen3.6-plus:free"
       - "deepseek/deepseek-r1-0528:free"
-      - "qwen/qwen3-coder-480b-a35b:free"
+      - "qwen/qwen3-coder:free"
 
   - id: "cloudflare"
     enabled: false

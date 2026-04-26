@@ -51,6 +51,21 @@ def _read_yaml(path: str) -> Dict[str, Any]:
     return data
 
 
+def _resolve_base_dir(config_path: str) -> str:
+    config_dir = os.path.dirname(os.path.abspath(config_path))
+    if os.path.basename(config_dir).lower() == "config":
+        return os.path.dirname(config_dir)
+    return config_dir
+
+
+def _resolve_path(value: str, base_dir: str) -> str:
+    if not value:
+        return value
+    if os.path.isabs(value):
+        return value
+    return os.path.abspath(os.path.join(base_dir, value))
+
+
 def _make_app_config(data: Dict[str, Any]) -> AppConfig:
     return AppConfig(**(data or {}))
 
@@ -64,12 +79,15 @@ def _make_providers(items: List[Dict[str, Any]]) -> List[ProviderConfig]:
 
 
 def load_settings(path: str) -> Settings:
+    config_path = os.path.abspath(path)
+    base_dir = _resolve_base_dir(config_path)
     raw = _read_yaml(path)
     settings = Settings(
         app=_make_app_config(raw.get("app", {})),
         router=_make_router_config(raw.get("router", {})),
         providers=_make_providers(raw.get("providers", [])),
     )
+    settings.app.sqlite_path = _resolve_path(settings.app.sqlite_path, base_dir)
     sqlite_dir = os.path.dirname(settings.app.sqlite_path)
     if sqlite_dir:
         os.makedirs(sqlite_dir, exist_ok=True)

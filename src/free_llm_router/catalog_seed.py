@@ -36,7 +36,7 @@ CATALOG: Dict[str, List[Dict[str, Any]]] = {
             "setup_reference": "provider-apis.md",
             "auth_hint": "Cohere trial API key",
             "example_model": "command-a-03-2025",
-            "environment_variables": ["CO_API_KEY"],
+            "environment_variables": ["COHERE_API_KEY"],
             "key_steps": [
                 "Create a Cohere account and generate a trial API key.",
                 "Use the documented OpenAI-compatible base URL.",
@@ -91,19 +91,19 @@ CATALOG: Dict[str, List[Dict[str, Any]]] = {
             "name": "GitHub Models",
             "category": "inference_provider",
             "adapter": "openai",
-            "base_url": "https://models.inference.ai.azure.com",
+            "base_url": "https://models.github.ai/inference",
             "api_key_env": "GITHUB_TOKEN",
-            "docs_url": "https://github.com/marketplace/models",
+            "docs_url": "https://docs.github.com/en/github-models",
             "setup_reference": "inference-providers.md",
             "auth_hint": "Fine-grained GitHub token with Models permission",
-            "example_model": "gpt-4o",
+            "example_model": "openai/gpt-4.1-mini",
             "environment_variables": ["GITHUB_TOKEN"],
             "key_steps": [
                 "Create a fine-grained personal access token with the Models permission.",
-                "Use the Azure-hosted OpenAI-compatible base URL.",
+                "Use the current GitHub Models inference endpoint.",
             ],
             "notes": [
-                "The guide explicitly calls for a fine-grained token with Models permission.",
+                "The model identifier format is publisher-prefixed, for example openai/gpt-4.1-mini.",
             ],
         },
         {
@@ -484,7 +484,7 @@ CATALOG: Dict[str, List[Dict[str, Any]]] = {
             "modality": "text",
         },
         {
-            "id": "gpt-4.1",
+            "id": "openai/gpt-4.1",
             "provider_id": "github_models",
             "context_length": 1048576,
             "max_output_tokens": 32768,
@@ -496,7 +496,7 @@ CATALOG: Dict[str, List[Dict[str, Any]]] = {
             "modality": "text",
         },
         {
-            "id": "gpt-4.1-mini",
+            "id": "openai/gpt-4.1-mini",
             "provider_id": "github_models",
             "context_length": 1048576,
             "max_output_tokens": 32768,
@@ -508,7 +508,7 @@ CATALOG: Dict[str, List[Dict[str, Any]]] = {
             "modality": "text",
         },
         {
-            "id": "gpt-4o",
+            "id": "openai/gpt-4o",
             "provider_id": "github_models",
             "context_length": 131072,
             "max_output_tokens": 16384,
@@ -520,7 +520,7 @@ CATALOG: Dict[str, List[Dict[str, Any]]] = {
             "modality": "text_vision",
         },
         {
-            "id": "o4-mini",
+            "id": "openai/o4-mini",
             "provider_id": "github_models",
             "context_length": 204800,
             "max_output_tokens": 100000,
@@ -532,7 +532,7 @@ CATALOG: Dict[str, List[Dict[str, Any]]] = {
             "modality": "text",
         },
         {
-            "id": "DeepSeek-R1",
+            "id": "deepseek/DeepSeek-R1",
             "provider_id": "github_models",
             "context_length": 65536,
             "max_output_tokens": 8192,
@@ -700,7 +700,7 @@ CATALOG: Dict[str, List[Dict[str, Any]]] = {
             "modality": "text",
         },
         {
-            "id": "qwen/qwen3-coder-480b-a35b:free",
+            "id": "qwen/qwen3-coder:free",
             "provider_id": "openrouter",
             "context_length": 262144,
             "max_output_tokens": 32768,

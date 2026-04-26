@@ -1,9 +1,15 @@
 import argparse
 import os
+import sys
 from typing import Dict, List, Optional
 
 import httpx
 import streamlit as st
+
+if __package__ in {None, ""}:
+    package_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    if package_root not in sys.path:
+        sys.path.insert(0, package_root)
 
 from free_llm_router.catalog import Catalog
 from free_llm_router.config import load_settings
@@ -95,13 +101,20 @@ def _post_chat_completion(
     if router_hints:
         payload["router"] = router_hints
 
-    with httpx.Client(timeout=timeout_seconds) as client:
+    with httpx.Client(timeout=timeout_seconds, trust_env=False) as client:
         response = client.post(
             "{0}/chat/completions".format(api_base_url.rstrip("/")),
             json=payload,
         )
-        response.raise_for_status()
-        return response.json()
+        if response.is_success:
+            return response.json()
+        detail = response.text.strip()
+        raise RuntimeError(
+            "Router returned HTTP {0}: {1}".format(
+                response.status_code,
+                detail or "empty response body",
+            )
+        )
 
 
 def _render_overview(catalog: Catalog, store: RouterStore) -> None:

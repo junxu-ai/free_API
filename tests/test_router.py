@@ -1,5 +1,11 @@
 import unittest
 import os
+import sys
+if __package__ in {None, ""}:
+    package_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    if package_root not in sys.path:
+        sys.path.insert(0, package_root)
+
 
 from free_llm_router.catalog import Catalog
 from free_llm_router.config import ProviderConfig, Settings
@@ -24,7 +30,7 @@ def build_catalog() -> Catalog:
                 enabled=True,
                 model_allowlist=[
                     "deepseek/deepseek-r1-0528:free",
-                    "qwen/qwen3-coder-480b-a35b:free",
+                    "qwen/qwen3-coder:free",
                 ],
             ),
         ]
@@ -48,10 +54,10 @@ class RouterTests(unittest.TestCase):
         request = ChatCompletionRequest(
             model="auto",
             messages=[ChatMessage(role="user", content="Write Python code to parse a CSV file.")],
-            router=RouterHints(model_ids=["qwen/qwen3-coder-480b-a35b:free"]),
+            router=RouterHints(model_ids=["qwen/qwen3-coder:free"]),
         )
         plan = router.build_plan(request)
-        self.assertEqual(plan.candidates[0].id, "qwen/qwen3-coder-480b-a35b:free")
+        self.assertEqual(plan.candidates[0].id, "qwen/qwen3-coder:free")
 
     def test_provider_base_url_template_resolves_account_id(self) -> None:
         os.environ["CLOUDFLARE_ACCOUNT_ID"] = "acct-123"

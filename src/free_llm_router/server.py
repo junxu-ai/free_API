@@ -113,6 +113,7 @@ def create_app(config_path: str) -> FastAPI:
             raise HTTPException(status_code=400, detail="No configured models are available.")
 
         request_id = "router-{0}".format(uuid.uuid4().hex[:12])
+        failures = []
 
         if request.stream:
             primary = plan.candidates[0]
@@ -150,7 +151,14 @@ def create_app(config_path: str) -> FastAPI:
                 )
                 return JSONResponse(content=response.dict())
             except Exception as exc:
-                last_error = str(exc)
+                last_error = "{0}: {1}".format(type(exc).__name__, str(exc))
+                failures.append(
+                    {
+                        "provider_id": model.provider_id,
+                        "model_id": model.id,
+                        "error": last_error,
+                    }
+                )
                 latency_ms = (time.time() - started) * 1000.0
                 store.log_request(
                     request_id=request_id,
@@ -166,7 +174,13 @@ def create_app(config_path: str) -> FastAPI:
                     error=last_error,
                 )
 
-        raise HTTPException(status_code=502, detail=last_error or "All candidate models failed.")
+        raise HTTPException(
+            status_code=502,
+            detail={
+                "message": last_error or "All candidate models failed.",
+                "failures": failures,
+            },
+        )
 
     return app
 
